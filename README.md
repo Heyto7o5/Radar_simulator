@@ -57,7 +57,7 @@ radar-platform run --config configs/unified/lab_fmcw_mimo.json --output .runtime
 python scripts/render_scene.py --run .runtime/example --output .runtime/example_figures
 ```
 
-`radar-platform run`、`python -m radar_platform run` 与历史 `python scripts/run_scene.py` 调用同一个运行实现。输出目录必须是新目录，避免覆盖实验。
+`radar-platform run`、`python -m radar_platform.cli run` 与历史 `python scripts/run_scene.py` 调用同一个运行实现。输出目录必须是新目录，避免覆盖实验。旧 `python -m radar_platform` 保留历史服务启动行为，新流程使用上述 CLI。
 
 启动工作台：
 

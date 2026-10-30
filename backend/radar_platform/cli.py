@@ -27,7 +27,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.command == 'serve':
         import uvicorn
-        return uvicorn.run('radar_platform.api:app', host=args.host, port=args.port, reload=args.reload)
+        return uvicorn.run('radar_platform.application:app', host=args.host, port=args.port, reload=args.reload)
     if args.command == 'capabilities':
         from .capabilities import capabilities
         result = capabilities()

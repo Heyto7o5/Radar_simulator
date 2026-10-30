@@ -71,12 +71,6 @@ def health() -> dict[str, str]:
     return {"status": "ok", "version": __version__}
 
 
-@app.get('/api/v1/capabilities')
-def platform_capabilities():
-    from .capabilities import capabilities
-    return capabilities()
-
-
 @app.get("/api/v1/presets")
 def presets() -> dict:
     clean_request = clean_demo_request()
@@ -90,7 +84,7 @@ def presets() -> dict:
             "warnings": request_warnings(clean_request),
         },
         "high_altitude_missile_10ghz": {
-            "name": "1200 m/s 高速近垂直平台",
+            "name": "1200 m/s 高速导弹",
             "description": "保留真实单 PRF 折叠，用于高速运动和后续多 PRF 扩展。",
             "request": high_speed_request.model_dump(mode="json"),
             "derived_metrics": derived_metrics(high_speed_request.radar).model_dump(mode="json"),

@@ -13,5 +13,5 @@ cd "${RADAR_PROJECT_DIR}/frontend"
 npm run build
 cd "${RADAR_PROJECT_DIR}"
 echo "仿真工作台：http://${RADAR_PREVIEW_HOST:-127.0.0.1}:${RADAR_PREVIEW_PORT:-8000}/simulate"
-exec "${RADAR_PROJECT_DIR}/.venv/bin/python" -m radar_platform serve \
+exec "${RADAR_PROJECT_DIR}/.venv/bin/python" -m radar_platform.cli serve \
   --host "${RADAR_PREVIEW_HOST:-127.0.0.1}" --port "${RADAR_PREVIEW_PORT:-8000}"

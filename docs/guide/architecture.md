@@ -23,6 +23,7 @@ RD / RA / RAD、比较、重放或应用层学习
 | 模块 | 职责 |
 |---|---|
 | `backend/radar_platform/cli.py`、`runner.py` | 安装后的公共命令；保存完整配置、源代码哈希、逐帧产品与失败状态 |
+| `application.py` | 当前服务入口；在保留兼容文件的前提下接入统一能力目录与多模型预检 |
 | `unified/schema.py`、`applicability.py`、`motion_check.py` | 配置/时序/预算/近似风险检查 |
 | `unified/session.py` | 动态采集、静态扫频、统计背景、历史近似的统一会话选择 |
 | `unified/scene.py`、`trajectory.py` | 编译点/面/DEM与平台轨迹；世界固定散射场景 |

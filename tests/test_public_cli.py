@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
-from radar_platform.api import app
+from radar_platform.application import app
 from radar_platform.capabilities import capabilities
 from radar_platform.configuration import inspect_configuration
 from radar_platform.runner import run_configuration
@@ -25,7 +25,7 @@ def test_public_check_covers_every_acquisition_family(filename, tmp_path):
     raw = json.loads(path.read_text())
     expected = inspect_configuration(raw)
     assert expected['status'] in ('usable', 'risk')
-    run = subprocess.run([sys.executable, '-m', 'radar_platform', 'check', '--config', str(path)],
+    run = subprocess.run([sys.executable, '-m', 'radar_platform.cli', 'check', '--config', str(path)],
                          check=True, capture_output=True, text=True, timeout=30)
     assert json.loads(run.stdout) == expected
     with TestClient(app) as client:
@@ -35,7 +35,7 @@ def test_public_check_covers_every_acquisition_family(filename, tmp_path):
 
 
 def test_capability_contract_shared_by_cli_api():
-    run = subprocess.run([sys.executable, '-m', 'radar_platform', 'capabilities'],
+    run = subprocess.run([sys.executable, '-m', 'radar_platform.cli', 'capabilities'],
                          check=True, capture_output=True, text=True, timeout=30)
     assert json.loads(run.stdout) == capabilities()
     with TestClient(app) as client:
@@ -47,7 +47,7 @@ def test_installed_runner_and_legacy_script_are_equivalent(tmp_path):
     raw = json.loads(config.read_text())
     result = run_configuration(raw, tmp_path/'python')
     assert result['status'] == 'complete'
-    subprocess.run([sys.executable, '-m', 'radar_platform', 'run', '--config', str(config),
+    subprocess.run([sys.executable, '-m', 'radar_platform.cli', 'run', '--config', str(config),
                     '--output', str(tmp_path/'cli')], check=True, capture_output=True, timeout=30)
     for path in (tmp_path/'python').glob('frame_*/*.bin'):
         assert path.read_bytes() == (tmp_path/'cli'/path.relative_to(tmp_path/'python')).read_bytes()

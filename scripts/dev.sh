@@ -11,7 +11,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 cd "${PROJECT_DIR}"
-python -m radar_platform serve --host "${RADAR_API_HOST:-127.0.0.1}" --port "${RADAR_API_PORT:-8000}" &
+python -m radar_platform.cli serve --host "${RADAR_API_HOST:-127.0.0.1}" --port "${RADAR_API_PORT:-8000}" &
 BACKEND_PID=$!
 
 cd "${PROJECT_DIR}/frontend"

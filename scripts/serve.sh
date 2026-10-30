@@ -10,4 +10,4 @@ if [[ ! -f "${PROJECT_DIR}/frontend/dist/index.html" ]]; then
 fi
 
 cd "${PROJECT_DIR}"
-exec python -m radar_platform serve --host "${RADAR_API_HOST:-127.0.0.1}" --port "${RADAR_API_PORT:-8000}"
+exec python -m radar_platform.cli serve --host "${RADAR_API_HOST:-127.0.0.1}" --port "${RADAR_API_PORT:-8000}"

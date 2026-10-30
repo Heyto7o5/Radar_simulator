@@ -15,7 +15,7 @@ router=APIRouter(prefix='/api/v1',tags=['unified scene simulation'])
 
 @router.post('/scene-check')
 def check_configuration(request: dict):
-    from ..configuration import inspect_configuration
+    from .applicability import inspect_configuration
     return inspect_configuration(request)
 
 
