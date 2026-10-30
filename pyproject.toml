@@ -12,7 +12,8 @@ dependencies = [
   "fastapi>=0.115,<0.116",
   "uvicorn[standard]>=0.30,<0.35",
   "pydantic>=2.10,<3",
-  "numpy>=2.0,<3",
+  # MAROON's restricted legacy reader requires the validated NumPy 2.0-2.2 API.
+  "numpy>=2.0,<2.3",
   "scipy>=1.14,<2",
   "pandas>=2.2,<3",
   "h5py>=3.11,<4",
