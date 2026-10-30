@@ -1,0 +1,24 @@
+{
+  "declared_date": "2026-10-22",
+  "selection_policy": "Fixed locations and views chosen before inspecting raster elevations or occlusion results. Do not raise terrain or search for a visually impressive shadow.",
+  "dataset": "Copernicus GLO-30 Public, AWS 2021 release",
+  "tile": "Copernicus_DSM_COG_10_N46_00_E007_00_DEM",
+  "source_registry": "https://registry.opendata.aws/copernicus-dem/",
+  "surface_type": "DSM including vegetation/buildings; not bare-earth DTM",
+  "horizontal_crs": "EPSG:4326",
+  "vertical_datum": "EGM2008 orthometric meters",
+  "locations": [
+    {"id": "alpine", "latitude_deg": 46.58, "longitude_deg": 7.95},
+    {"id": "valley", "latitude_deg": 46.67, "longitude_deg": 7.85},
+    {"id": "foothill", "latitude_deg": 46.80, "longitude_deg": 7.60}
+  ],
+  "patch_width_m": 1920,
+  "comparison_grid_spacing_m": [30, 60, 120],
+  "altitude_above_patch_center_m": 5000,
+  "off_nadir_angles_deg": [0, 10, 20],
+  "view_azimuth_deg": [0, 90],
+  "speed_mps": 1200,
+  "no_height_exaggeration": true,
+  "reference": "Independent raster-height segment traversal using the same triangulated piecewise-linear surface; add sampling/geometry-resolution checks separately.",
+  "limits": ["DEM geometry and LOS cross-check, not co-located measured radar validation", "No observed material/land-cover truth assumed", "All-visible results are retained, not treated as failed selection"]
+}

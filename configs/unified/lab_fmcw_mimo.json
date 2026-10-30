@@ -1,0 +1,12 @@
+{
+  "name": "Ideal laboratory FMCW 2Tx4Rx; not a measured dataset reproduction",
+  "waveform": {"kind": "fmcw", "start_hz": 77000000000, "slope_hz_s": 21000000000000, "ramp_s": 0.000040, "slot_period_s": 0.000060, "adc_start_s": 0.000004, "sample_rate_hz": 4000000, "samples": 128, "loops": 64},
+  "platform": {"position_ned_m": [0, 0, 0], "velocity_ned_mps": [0, 0, 0], "boresight_ned": [1, 0, 0], "right_hint_ned": [0, 1, 0], "beam_half_angle_deg": 60},
+  "array": {"layout": "ula", "num_tx": 2, "num_rx": 4},
+  "scene": {"amplitude_reference_range_m": 10, "objects": [
+    {"kind": "point", "id": "moving", "position_ned_m": [10, 2, 0], "velocity_ned_mps": [-2, 0, 0], "amplitude": 1},
+    {"kind": "point", "id": "static", "position_ned_m": [6, -2, 0], "amplitude": 0.7}
+  ]},
+  "processing": {"range_limits_m": [0, 20], "azimuth_deg": [-40, -30, -20, -10, 0, 10, 20, 30, 40], "elevation_deg": [0], "tdm_compensation": true, "save_adc": true},
+  "sequence": {"frame_count": 2, "frame_interval_s": 0.02}
+}

@@ -1,0 +1,10 @@
+{
+  "waveform": "sfcw",
+  "coordinate_frame": "NED_m",
+  "frequencies_hz": [8000000000, 8500000000, 9000000000, 9500000000, 10000000000],
+  "tx_ned_m": [[0, 0, 0]],
+  "rx_ned_m": [[0, 0, 0]],
+  "vertices_ned_m": [[1, -2, -2], [1, 2, -2], [1, 0, 2]],
+  "faces": [[0, 1, 2]],
+  "max_bounces": 1
+}

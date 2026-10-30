@@ -1,0 +1,19 @@
+{
+  "kind": "block_texture_background",
+  "name": "Historical statistical block texture, not a sea surface reconstruction",
+  "model": {
+    "carrier_hz": 9390000000,
+    "prf_hz": 1000,
+    "pulse_width_s": 0.0000002,
+    "range_near_edge_m": [1000, 1030],
+    "mean_power": [1, 2],
+    "doppler_center_hz": 20,
+    "doppler_std_hz": 10,
+    "white_power_fraction": 0.05,
+    "texture_shape": 2,
+    "texture_block_samples": 128
+  },
+  "samples": 1024,
+  "seed": 42,
+  "white_baseline": false
+}

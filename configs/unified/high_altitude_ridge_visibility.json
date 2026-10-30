@@ -1,0 +1,19 @@
+{
+  "name": "Ideal steep ridge visibility benchmark; not measured terrain",
+  "input_provenance": ["Synthetic ridge defined explicitly in meters for occlusion testing, not an open DEM or a real mountain reconstruction.", "600 m ridge over short horizontal span is a deliberate geometric stress case; no realistic land-cover calibration."],
+  "waveform": {"kind": "pulsed_lfm", "carrier_hz": 1000000000, "bandwidth_hz": 60000000, "sample_rate_hz": 150000000, "pulse_width_s": 0.000010, "slot_period_s": 0.000050, "adc_start_s": 0.000025, "samples": 3600, "loops": 32},
+  "platform": {"position_ned_m": [0, 0, -5000], "velocity_ned_mps": [208.3778132, 0, 1181.7693036], "boresight_ned": [1200, 0, 5000], "beam_half_angle_deg": 10},
+  "array": {"layout": "siso", "num_tx": 1, "num_rx": 1},
+  "scene": {
+    "amplitude_reference_range_m": 5000,
+    "seed": 42,
+    "objects": [
+      {"kind": "point", "id": "front", "position_ned_m": [1000, 0, 0], "amplitude": 1},
+      {"kind": "point", "id": "behind", "position_ned_m": [1300, 0, 0], "amplitude": 1}
+    ],
+    "terrain": {"id": "ridge", "kind": "dem", "north_m": [600, 900, 1100, 1200, 1300, 1500], "east_m": [-300, 0, 300], "elevation_up_m": [[0,0,0,600,0,0], [0,0,0,600,0,0], [0,0,0,600,0,0]], "relative_reflectivity": 0.002}
+  },
+  "visibility": {"occlusion_enabled": true, "report_coverage": true, "occluders": "terrain"},
+  "processing": {"range_limits_m": [4300, 5500], "azimuth_deg": [0], "elevation_deg": [0], "save_adc": true},
+  "sequence": {"frame_count": 1, "frame_interval_s": 0.05}
+}

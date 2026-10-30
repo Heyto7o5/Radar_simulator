@@ -1,0 +1,25 @@
+{
+  "version": "multidem_rda_v1",
+  "seed": 2026103002,
+  "selection_width_m": 1920,
+  "context_width_m": 420,
+  "measured_grid_m": 30,
+  "minimum_region_distance_km": 50,
+  "regions": [
+    {"id": "fr_beauce", "split": "train", "latitude_deg": 48.10, "longitude_deg": 1.65},
+    {"id": "de_magdeburg", "split": "train", "latitude_deg": 52.05, "longitude_deg": 11.35},
+    {"id": "pl_wielkopolska", "split": "train", "latitude_deg": 52.35, "longitude_deg": 17.35},
+    {"id": "it_po", "split": "train", "latitude_deg": 45.05, "longitude_deg": 10.20},
+    {"id": "hu_plain", "split": "train", "latitude_deg": 47.10, "longitude_deg": 20.20},
+    {"id": "es_castilla", "split": "train", "latitude_deg": 41.65, "longitude_deg": -4.65},
+    {"id": "us_iowa", "split": "train", "latitude_deg": 42.15, "longitude_deg": -93.65},
+    {"id": "cn_henan", "split": "train", "latitude_deg": 34.10, "longitude_deg": 114.25},
+    {"id": "dk_funen", "split": "val", "latitude_deg": 55.30, "longitude_deg": 10.35},
+    {"id": "us_illinois", "split": "val", "latitude_deg": 40.10, "longitude_deg": -89.25},
+    {"id": "cn_shandong", "split": "test", "latitude_deg": 36.80, "longitude_deg": 116.75},
+    {"id": "fr_picardie", "split": "test", "latitude_deg": 49.80, "longitude_deg": 3.20}
+  ],
+  "selection_rule": "Within each predeclared region, select the nearest 120m all-dominant-cropland window whose full 420m context is available. Selection uses land cover and coverage only, never radar/model performance. Fail rather than silently substitute a region.",
+  "building": {"width_m": [4, 10], "length_m": [5, 12], "height_above_ground_m": [3, 9], "yaw_deg": [-180, 180], "relative_reflectivity": [0.01, 0.06], "divisions": 2},
+  "notes": ["All crops and episodes from a region inherit its split.", "Source DEM tiles must be exclusive to one split.", "The twelve coordinates are candidate regions until the real cropland selection succeeds.", "Test-region radar/labels must not be used for model selection.", "Public source crops and derived data stay inside the authorized project directory."]
+}

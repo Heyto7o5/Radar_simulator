@@ -1,0 +1,30 @@
+{
+  "name": "Laboratory moving finite metal plate, scalar physical optics",
+  "waveform": {
+    "kind": "pulsed_lfm", "carrier_hz": 9000000000,
+    "bandwidth_hz": 20000000, "sample_rate_hz": 40000000,
+    "pulse_width_s": 0.000002, "slot_period_s": 0.0002,
+    "adc_start_s": 0, "samples": 128, "loops": 64
+  },
+  "platform": {
+    "position_ned_m": [0, 0, 0], "velocity_ned_mps": [0, 0, 0],
+    "boresight_ned": [1, 0, 0], "right_hint_ned": [0, 1, 0], "beam_half_angle_deg": 30
+  },
+  "array": {"layout": "siso", "num_tx": 1, "num_rx": 1},
+  "scene": {
+    "objects": [{
+      "kind": "plate", "id": "metal_plate", "position_ned_m": [30, 0, 0],
+      "velocity_ned_mps": [-3, 0, 0], "size_m": [0.85, 0.65],
+      "normal_ned": [-1, 0, 0], "divisions": 1, "scattering": "coherent",
+      "scattering_model": "scalar_po", "quadrature_order": 12,
+      "relative_reflectivity": 1, "two_sided": false
+    }],
+    "max_scatterers": 4096,
+    "seed": 42
+  },
+  "processing": {
+    "range_limits_m": [5, 70], "range_window": "hann", "doppler_window": "hann",
+    "azimuth_deg": [0], "elevation_deg": [0], "save_adc": true
+  },
+  "sequence": {"frame_count": 2, "frame_interval_s": 0.02}
+}

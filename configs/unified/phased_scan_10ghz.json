@@ -1,0 +1,234 @@
+{
+  "name": "Analytic 10 GHz phased transmit scan, not a measured-scene validation",
+  "input_provenance": [
+    "Ideal point targets for checking transmit scan and receive angle conventions.",
+    "One logical Tx channel feeds 16 coherent physical Tx elements; 16 physical Rx channels are retained.",
+    "Single PRF at 1200 m/s may fold Doppler; no ambiguity resolution."
+  ],
+  "waveform": {
+    "kind": "pulsed_lfm",
+    "carrier_hz": 10000000000,
+    "bandwidth_hz": 20000000,
+    "sample_rate_hz": 40000000,
+    "pulse_width_s": 0.000005,
+    "slot_period_s": 0.0001,
+    "adc_start_s": 0.000028,
+    "samples": 1024,
+    "loops": 32
+  },
+  "platform": {
+    "position_ned_m": [
+      0,
+      0,
+      -5000
+    ],
+    "velocity_ned_mps": [
+      208.3778132,
+      0,
+      1181.7693036
+    ],
+    "boresight_ned": [
+      0,
+      0,
+      1
+    ],
+    "beam_half_angle_deg": 4
+  },
+  "array": {
+    "layout": "ula",
+    "num_tx": 1,
+    "num_rx": 16
+  },
+  "radiation": {
+    "tx_element": {
+      "kind": "cosine_power",
+      "power_exponent": 1
+    },
+    "rx_element": {
+      "kind": "cosine_power",
+      "power_exponent": 1
+    },
+    "replace_legacy_cone": true,
+    "transmit_aperture": {
+      "positions_local_m": [
+        [
+          0,
+          -0.11242217175,
+          0
+        ],
+        [
+          0,
+          -0.09743254885,
+          0
+        ],
+        [
+          0,
+          -0.08244292595,
+          0
+        ],
+        [
+          0,
+          -0.06745330305,
+          0
+        ],
+        [
+          0,
+          -0.05246368015,
+          0
+        ],
+        [
+          0,
+          -0.03747405725,
+          0
+        ],
+        [
+          0,
+          -0.02248443435,
+          0
+        ],
+        [
+          0,
+          -0.00749481145,
+          0
+        ],
+        [
+          0,
+          0.00749481145,
+          0
+        ],
+        [
+          0,
+          0.02248443435,
+          0
+        ],
+        [
+          0,
+          0.03747405725,
+          0
+        ],
+        [
+          0,
+          0.05246368015,
+          0
+        ],
+        [
+          0,
+          0.06745330305,
+          0
+        ],
+        [
+          0,
+          0.08244292595,
+          0
+        ],
+        [
+          0,
+          0.09743254885,
+          0
+        ],
+        [
+          0,
+          0.11242217175,
+          0
+        ]
+      ],
+      "steering_azimuth_deg": -6,
+      "scan_schedule": [
+        {
+          "time_s": 0.02,
+          "azimuth_deg": 6,
+          "elevation_deg": 0
+        }
+      ]
+    }
+  },
+  "scene": {
+    "amplitude_reference_range_m": 5000,
+    "objects": [
+      {
+        "kind": "point",
+        "id": "left",
+        "position_ned_m": [
+          0,
+          -500,
+          0
+        ]
+      },
+      {
+        "kind": "point",
+        "id": "center",
+        "position_ned_m": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "kind": "point",
+        "id": "right",
+        "position_ned_m": [
+          0,
+          500,
+          0
+        ]
+      }
+    ]
+  },
+  "processing": {
+    "range_limits_m": [
+      4800,
+      5200
+    ],
+    "azimuth_deg": [
+      -20,
+      -19,
+      -18,
+      -17,
+      -16,
+      -15,
+      -14,
+      -13,
+      -12,
+      -11,
+      -10,
+      -9,
+      -8,
+      -7,
+      -6,
+      -5,
+      -4,
+      -3,
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "elevation_deg": [
+      0
+    ],
+    "save_adc": true
+  },
+  "sequence": {
+    "frame_count": 2,
+    "frame_interval_s": 0.02
+  }
+}

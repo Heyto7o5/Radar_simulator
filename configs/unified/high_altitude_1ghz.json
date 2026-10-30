@@ -1,0 +1,13 @@
+{
+  "name": "High altitude 1 GHz SISO, 1200 m/s, ideal point targets",
+  "waveform": {"kind": "pulsed_lfm", "carrier_hz": 1000000000, "bandwidth_hz": 60000000, "sample_rate_hz": 150000000, "pulse_width_s": 0.000020, "slot_period_s": 0.000060, "adc_start_s": 0.000030, "samples": 4500, "loops": 64},
+  "platform": {"position_ned_m": [0, 0, -5000], "velocity_ned_mps": [208.3778132, 0, 1181.7693036], "boresight_ned": [0.1736481777, 0, 0.984807753], "beam_half_angle_deg": 4},
+  "array": {"layout": "siso", "num_tx": 1, "num_rx": 1},
+  "scene": {"amplitude_reference_range_m": 5000, "seed": 42, "objects": [
+    {"kind": "point", "id": "T1", "position_ned_m": [582, 0, 0], "amplitude": 0.7},
+    {"kind": "point", "id": "T2", "position_ned_m": [882, 0, 0], "amplitude": 1.0},
+    {"kind": "point", "id": "T3", "position_ned_m": [1182, 0, 0], "amplitude": 0.8}
+  ]},
+  "processing": {"range_limits_m": [4900, 5200], "azimuth_deg": [0], "elevation_deg": [0], "save_adc": true},
+  "sequence": {"frame_count": 2, "frame_interval_s": 0.05}
+}

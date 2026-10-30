@@ -1,0 +1,80 @@
+{
+  "review_date": "2026-10-15",
+  "scope": "General radar laboratory and environmental observation; metadata audit is not data validation",
+  "resources": [
+    {
+      "name": "Maqu calibration plates", "category": "coherent metal surface",
+      "source": "https://essd.copernicus.org/articles/13/2819/2021/",
+      "local_status": "original complex frequency data and target geometry records acquired",
+      "observable": "complex S parameters and static range response",
+      "geometry": "rectangle dimensions, nominal distance and in-plane orientation; exact tilt/phase center incomplete",
+      "model_family": "scalar physical-optics area integral; finite conductivity/polarization not yet implemented",
+      "dynamic_rd_ground_truth": false, "license_status": "local source manifest records CC BY 4.0",
+      "next_evidence": "cross-session delay/geometry issue remains; do not fit it away on evaluation records"
+    },
+    {
+      "name": "Maqu meadow angular backscatter", "category": "soil and vegetation",
+      "source": "https://doi.org/10.17026/dans-zfb-qegy",
+      "local_status": "angular sigma0 tables acquired; full raw meadow time series not yet acquired",
+      "observable": "footprint-averaged backscatter with frequency/polarization/incidence coverage",
+      "geometry": "footprint and incidence intervals, no simultaneous complete 3D grass/soil model",
+      "model_family": "measured-coverage empirical surface coefficient; roughness and vegetation models require additional input",
+      "dynamic_rd_ground_truth": false, "license_status": "local source manifest records CC BY 4.0",
+      "next_evidence": "calibration/validation split by measurement date; forbid extrapolation beyond frequency/incidence coverage"
+    },
+    {
+      "name": "IPIX Dartmouth", "category": "sea clutter",
+      "source": "https://soma.ece.mcmaster.ca/ipix/index.html",
+      "local_status": "multiple original I/Q records acquired",
+      "observable": "range-gated slow-time I/Q and Doppler statistics",
+      "geometry": "observation geometry and some sea-state metadata, no synchronized wave surface",
+      "model_family": "correlated complex field and non-Gaussian texture; existing model remains separate from geometry solver",
+      "dynamic_rd_ground_truth": true, "license_status": "research terms and attribution; inspect official download terms",
+      "next_evidence": "stationarity, amplitude tails, range/time correlation and spectrum across separate records"
+    },
+    {
+      "name": "ARM KAZR spectra", "category": "cloud and precipitation volume scattering",
+      "source": "https://www.arm.gov/publications/tech_reports/handbooks/kazr_handbook.pdf",
+      "local_status": "official instrument/product documentation located; raw files not acquired",
+      "observable": "Doppler spectra and radar moments; choose spectra product rather than moment-only product",
+      "geometry": "height gates with atmospheric auxiliary observations; not exact droplet positions",
+      "model_family": "volume-scatterer velocity distributions; candidate only, not implemented",
+      "dynamic_rd_ground_truth": "product-dependent; verify actual spectrum axes and calibration",
+      "license_status": "access/account and product terms require verification before acquisition",
+      "next_evidence": "inspect a bounded spectra file and co-located ancillary data; do not equate moments with full spectra"
+    },
+    {
+      "name": "SnowSAR snow-covered terrain", "category": "snow, soil and forest",
+      "source": "https://essd.copernicus.org/articles/14/3915/2022/",
+      "local_status": "primary data-description paper inspected; files not acquired",
+      "observable": "X/Ku-band polarimetric backscatter and supporting snow/terrain measurements",
+      "geometry": "georeferenced products and field measurements; not assumed exact electromagnetic mesh",
+      "model_family": "surface/volume backscatter constraints; candidate only",
+      "dynamic_rd_ground_truth": false,
+      "license_status": "paper CC BY 4.0; data-product license must be checked separately",
+      "next_evidence": "secondary priority: use scattering strengths only, no SAR reconstruction added to this RD platform"
+    },
+    {
+      "name": "RADIATE", "category": "urban and adverse-weather background",
+      "source": "https://arxiv.org/abs/2010.09076",
+      "local_status": "primary paper inspected; files not acquired",
+      "observable": "automotive radar scenes in sun, rain, fog and snow with auxiliary sensors",
+      "geometry": "scene annotations/sensors do not provide complete material and scattering truth",
+      "model_family": "background scene statistics; candidate only, not a calibrated material model",
+      "dynamic_rd_ground_truth": "not established from inspected metadata; do not advertise as raw ADC/RD",
+      "license_status": "dataset terms and signal representation require verification",
+      "next_evidence": "lower priority until calibrated radar representation and access requirements are confirmed"
+    },
+    {
+      "name": "ACE MRR-2 precipitation spectral profiles", "category": "rain/snow volume scattering",
+      "source": "https://zenodo.org/records/3929289",
+      "local_status": "three bounded NetCDF raw spectral files and source README/header/event list acquired and checksummed on 2026-10-15",
+      "observable": "real spectral signal power [record,height,native Doppler bin], quality fields and velocity-bin spacing",
+      "geometry": "height gates and vessel metadata; no independent droplet geometry or full wind field",
+      "model_family": "candidate precipitation volume model; adapter implemented, forward-model validation not yet implemented",
+      "dynamic_rd_ground_truth": "range/height-resolved power spectra, NOT complex ADC; signed velocity origin not yet verified",
+      "license_status": "CC BY 4.0 confirmed by source record and downloaded README",
+      "next_evidence": "join precipitation intervals, verify velocity convention and transfer function; keep unclassified dates and missing data explicit"
+    }
+  ]
+}

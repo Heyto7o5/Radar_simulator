@@ -1,0 +1,20 @@
+{
+  "kind": "statistical_background",
+  "name": "Ideal correlated Gaussian background; not a measured sea replay",
+  "model": {
+    "prf_hz": 1000,
+    "range_m": [20, 35],
+    "mean_power": [1, 2],
+    "components": [{"weight": 1, "center_hz": 30, "std_hz": 10}],
+    "white_fraction": 0.05,
+    "texture_shape": 2,
+    "texture_tau_s": 0.1,
+    "covariance_real": [[1, 0.35], [0.35, 1]],
+    "covariance_imag": [[0, 0.2], [-0.2, 0]],
+    "family": "correlated_gaussian",
+    "domain": "range_gated_iq"
+  },
+  "samples": 1024,
+  "seed": 42,
+  "pulses_per_cpi": 256
+}
