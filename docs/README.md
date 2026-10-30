@@ -9,5 +9,6 @@
 | [功能与验证](guide/features-and-validation.md) | 每项能力的输入、输出、检查及未验证内容 |
 | [数据与复现](guide/data-and-reproducibility.md) | 外部数据、来源、许可、结果格式与复现实验 |
 | [开发与发布](guide/development.md) | 测试、扩展方式、提交检查和运行安全 |
+| [本次整理验收](guide/release-checks.md) | 全量测试、干净副本、配置矩阵与已知限制 |
 
 功能集成不意味着所有模型可以任意组合；以配置校验和适用性检查为准。`usable` 表示在声明模型下可运行，不是实测保真认证。

@@ -7,8 +7,7 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .coverage
-.runtime/*
-!.runtime/.gitkeep
+.runtime/
 frontend/node_modules/
 frontend/dist/
 frontend/*.tsbuildinfo
