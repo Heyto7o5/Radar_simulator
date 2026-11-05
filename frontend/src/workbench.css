@@ -15,3 +15,5 @@ html,body{background:#f3f6f9;color:#22364b}button,input,select{font-family:inher
 
 .lab-sequence-info{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border:1px solid #dfe6ee;border-radius:7px;background:#fff;color:#657b8f;font-size:12px}.lab-sequence-info strong{color:#304960;font-weight:500}.lab-sequence-info p{margin:5px 0 0;line-height:1.6}.lab-sequence-info>div{flex:1 1 260px}.lab-sequence-info .wb-button{flex-shrink:0}
 @media(max-width:600px){.lab-sequence-info{align-items:flex-start}.lab-sequence-info>div{flex-basis:100%}}
+
+.lab-sequence-info .lab-sequence-actions{flex:0 1 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.lab-sequence-actions label{display:flex;align-items:center;gap:8px}.lab-sequence-actions input{width:70px;padding:7px;border:1px solid #dce5eb;border-radius:4px;background:#fcfdfe;color:#304960}.lab-sequence-actions small{flex-basis:100%;font-size:11px}
