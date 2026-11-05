@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Auxiliary, SceneGeometry, SceneRequest, Vec3 } from "../workbenchTypes";
@@ -11,15 +11,23 @@ export default function Scene3D({ loading=false, request, geometry, auxiliary, t
   const host = useRef<HTMLDivElement>(null), controller = useRef<{ reset: (mode: string) => void; render: () => void }>();
   const [error, setError] = useState(""), [readout, setReadout] = useState("");
   const choose = useRef(onSelect); choose.current = onSelect;
-  const view = useRef<{ position: THREE.Vector3; target: THREE.Vector3 }>();
-  useEffect(() => {
-    if (!host.current) return;
-    const element = host.current, scene = new THREE.Scene(); scene.background = new THREE.Color(0x0e1c2c);
-    let renderer: THREE.WebGLRenderer;
-    try { renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); setError(""); }
-    catch { setError("当前浏览器无法创建 WebGL 三维视图。请启用硬件加速；参数和仿真结果仍可使用。"); return; }
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); element.appendChild(renderer.domElement);
-    const camera = new THREE.PerspectiveCamera(42, 1, .01, 1e8), controls = new OrbitControls(camera, renderer.domElement);
+  // A playback frame must not replace its canvas, WebGL context or camera.
+  const surface = useRef<{renderer:THREE.WebGLRenderer;camera:THREE.PerspectiveCamera;controls:OrbitControls;initialized:boolean}>();
+  useLayoutEffect(()=>{
+    if(!host.current)return;
+    let renderer:THREE.WebGLRenderer;
+    try{renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});setError("");}
+    catch{setError("当前浏览器无法创建 WebGL 三维视图，请启用硬件加速。");return;}
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));host.current.appendChild(renderer.domElement);
+    const camera=new THREE.PerspectiveCamera(42,1,.01,1e8);
+    const controls=new OrbitControls(camera,renderer.domElement);
+    surface.current={renderer,camera,controls,initialized:false};
+    return()=>{controller.current=undefined;surface.current=undefined;controls.dispose();renderer.dispose();renderer.domElement.remove();};
+  },[]);
+  useLayoutEffect(() => {
+    if (!host.current || !surface.current) return;
+    const element=host.current, {renderer,camera,controls}=surface.current;
+    const scene=new THREE.Scene();scene.background=new THREE.Color(0x0e1c2c);
     const lights = new THREE.HemisphereLight(0xd9edff, 0x263928, 2.4);scene.add(lights);
     const sun = new THREE.DirectionalLight(0xffffff, 2);sun.position.set(100, 200, 80);scene.add(sun);
     const group = new THREE.Group(); scene.add(group);
@@ -83,14 +91,14 @@ export default function Scene3D({ loading=false, request, geometry, auxiliary, t
     const axes=new THREE.AxesHelper(extent*.12);axes.position.set(center.x-extent*.3,0,center.z+extent*.3);group.add(axes);
     function render(){renderer.render(scene,camera);}
     function reset(mode:string){controls.target.copy(mode==="follow"?platform:center);camera.up.set(0,1,0);const target=controls.target;if(mode==="top"){camera.position.copy(target).add(new THREE.Vector3(0,extent*1.9,.0001));camera.up.set(0,0,-1);}else if(mode==="side")camera.position.copy(target).add(new THREE.Vector3(extent*1.9,extent*.15,0));else camera.position.copy(target).add(new THREE.Vector3(.8,.6,.8).normalize().multiplyScalar(extent*1.9));camera.near=Math.max(.01,extent/100000);camera.far=extent*50;camera.updateProjectionMatrix();controls.update();render();}
-    reset("default");if(view.current){camera.position.copy(view.current.position);controls.target.copy(view.current.target);controls.update();}
+    if(!surface.current.initialized){reset("default");surface.current.initialized=true;}
     controller.current={reset,render};
     const resize=new ResizeObserver(()=>{const w=element.clientWidth,h=element.clientHeight;renderer.setSize(w,h);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix();render();});resize.observe(element);
     controls.addEventListener("change",render);const ray=new THREE.Raycaster();ray.params.Points!.threshold=markerSize;
     let down=[0,0];const pointerDown=(e:PointerEvent)=>{down=[e.clientX,e.clientY];};
     const click=(e:PointerEvent)=>{if(Math.hypot(e.clientX-down[0],e.clientY-down[1])>4)return;const r=renderer.domElement.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2),camera);const hit=ray.intersectObjects(clickable)[0];if(hit){choose.current(hit.object.userData.id);const p=hit.point;setReadout(`${hit.object.userData.id} · N ${(-p.z).toFixed(1)} / E ${p.x.toFixed(1)} / 高程 ${p.y.toFixed(1)} m`);}};
     renderer.domElement.addEventListener("pointerdown",pointerDown);renderer.domElement.addEventListener("pointerup",click);render();
-    return()=>{if(geometry)view.current={position:camera.position.clone(),target:controls.target.clone()};resize.disconnect();controls.dispose();renderer.domElement.removeEventListener("pointerdown",pointerDown);renderer.domElement.removeEventListener("pointerup",click);scene.traverse(o=>{const m=o as THREE.Mesh;m.geometry?.dispose();if(m.material)(Array.isArray(m.material)?m.material:[m.material]).forEach(x=>x.dispose());});renderer.dispose();renderer.domElement.remove();};
+    return()=>{resize.disconnect();controls.removeEventListener("change",render);renderer.domElement.removeEventListener("pointerdown",pointerDown);renderer.domElement.removeEventListener("pointerup",click);scene.traverse(o=>{const m=o as THREE.Mesh;m.geometry?.dispose();if(m.material)(Array.isArray(m.material)?m.material:[m.material]).forEach(x=>x.dispose());});};
   },[request,geometry,auxiliary,time,selected,hidden,layer,wireframe,showBeam,showTrajectory]);
   return <div className="lab-scene" data-testid="scene-3d"><div ref={host} className="lab-three-host" />{loading&&<div className="lab-frame-loading">正在载入所选帧的场景状态…</div>}{error&&<div className="lab-scene-error">{error}</div>}<div className="lab-camera-tools">{[["default","复位"],["top","俯视"],["side","侧视"],["follow","定位平台"]].map(([mode,label])=><button key={mode} onClick={()=>controller.current?.reset(mode)}>{label}</button>)}<button onClick={()=>{const c=host.current?.querySelector("canvas");if(c){const a=document.createElement("a");a.href=c.toDataURL();a.download="scene.png";a.click();}}}>截图</button></div><div className="lab-scene-caption">N 北 · E 东 · 高程向上 · 比例 1:1<br/>点目标与平台符号放大 · 速度箭头示方向{geometry&&` · 散射点预览 1/${geometry.preview_stride}`}<br/>{readout}</div></div>;
 }

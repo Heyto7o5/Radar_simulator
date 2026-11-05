@@ -23,6 +23,7 @@ export function WorkbenchPage(){
   const [error,setError]=useState(""),[notice,setNotice]=useState(""),[check,setCheck]=useState<CheckReport|null>(null),[checking,setChecking]=useState(false),[riskPending,setRiskPending]=useState(false);
   const [frame,setFrame]=useState(0),[playing,setPlaying]=useState(false),[speed,setSpeed]=useState(1),[live,setLive]=useState(false),[caseInfo,setCaseInfo]=useState<CaseSpec|null>(null);
   const [readyFrame,setReadyFrame]=useState(-1),[auxFrame,setAuxFrame]=useState(-1),[clipStart,setClipStart]=useState(0),[clipEnd,setClipEnd]=useState<number|null>(null),[loop,setLoop]=useState(true);
+  const auxCache=useRef(new Map<string,Auxiliary>());
   const resultReady=useCallback((index:number)=>setReadyFrame(index),[]);
   const [selected,setSelected]=useState("platform"),[hidden,setHidden]=useState<string[]>([]),[layer,setLayer]=useState<SceneLayer>("height"),[wire,setWire]=useState(false),[beam,setBeam]=useState(true),[trajectory,setTrajectory]=useState(true);
   const [sceneMode,setSceneMode]=useState<"draft"|"result">("draft"),[present,setPresent]=useState(false),[step,setStep]=useState(0),[expanded,setExpanded]=useState(""),[mobile,setMobile]=useState("scene"),[controlsOpen,setControlsOpen]=useState(false),[split,setSplit]=useState(50),[draftSaved,setDraftSaved]=useState(false),[curves,setCurves]=useState(false),[arrayOpen,setArrayOpen]=useState(false);
@@ -54,7 +55,21 @@ export function WorkbenchPage(){
   useEffect(()=>{const job=runner.job;if(!job)return;localStorage.setItem("radar.lastJob.v2",job.job_id);if(params.get("job")!==job.job_id)setParams(p=>{const next=new URLSearchParams(p);next.set("job",job.job_id);return next;},{replace:true});let cancelled=false;void getExperiment(job.job_id).then(exp=>{if(!cancelled)setResultRequest(exp.request);}).catch(e=>{if(!cancelled)setError(String(e));});return()=>{cancelled=true;};},[runner.job?.job_id]);
   useEffect(()=>{const job=runner.job;if(!job?.frames.length)return;let cancelled=false;void getGeometry(job.job_id).then(g=>{if(!cancelled){setGeometry(g);setGeometryJob(job.job_id);}}).catch(e=>{if(!cancelled)setError(String(e));});return()=>{cancelled=true;};},[runner.job?.job_id,Boolean(runner.job?.frames.length)]);
   const meta=runner.job?.frames[Math.min(frame,Math.max(0,runner.job.frames.length-1))];
-  useEffect(()=>{if(!runner.job||!meta){setAux(null);return;}const ctrl=new AbortController();const id=runner.job.job_id;setAuxFrame(-1);getAuxiliary(id,meta.frame_index,ctrl.signal).then(a=>{if(!ctrl.signal.aborted){setAux(a);setAuxJob(id);setAuxFrame(meta.frame_index);}}).catch(e=>{if(!isAbort(e))setError(String(e));});return()=>ctrl.abort();},[runner.job?.job_id,meta?.frame_index]);
+  useEffect(()=>{
+    if(!runner.job||!meta){setAux(null);return;}
+    const ctrl=new AbortController(),id=runner.job.job_id,key=id+":"+meta.frame_index;
+    setAuxFrame(-1);
+    const accept=(a:Auxiliary)=>{if(!ctrl.signal.aborted){setAux(a);setAuxJob(id);setAuxFrame(meta.frame_index);}};
+    const hit=auxCache.current.get(key);
+    if(hit)accept(hit);
+    else getAuxiliary(id,meta.frame_index,ctrl.signal).then(a=>{
+      if(ctrl.signal.aborted)return;
+      auxCache.current.set(key,a);if(auxCache.current.size>8)auxCache.current.delete(auxCache.current.keys().next().value!);
+      accept(a);
+    }).catch(e=>{if(!isAbort(e))setError(String(e));});
+    return()=>ctrl.abort();
+  },[runner.job?.job_id,meta?.frame_index]);
+
   const lastFrame=Math.max(0,(runner.job?.frames.length??1)-1);
   const clipLast=Math.max(Math.min(clipStart,lastFrame),Math.min(clipEnd??lastFrame,lastFrame));
   const frameReady=readyFrame===frame&&auxFrame===frame;
@@ -95,9 +110,9 @@ export function WorkbenchPage(){
         <ScenarioEditor request={draft.request} features={draft.features} onChange={r=>change(d=>({...d,request:r}))} setFeatures={f=>change(d=>({...d,features:f}))} auto={false} setAuto={()=>void proposeSampling()} presets={presets} preset={draft.preset} onPreset={key=>{const r=clone(presets[key]);change(()=>({request:r,features:defaultFeatures(r),auto:false,preset:key}));setCaseInfo(null);setSceneMode("draft");setLive(false);}}/>
         <AdvancedEditor request={draft.request} onChange={r=>change(d=>({...d,request:r,features:defaultFeatures(r)}))}/>
       </aside>
-      <div className="lab-primary"><div className="lab-view-pair" data-frame={frame} data-ready={frameReady&&sceneMode==="result"} aria-busy={sceneMode==="result"&&Boolean(meta)&&!frameReady} style={{gridTemplateColumns:`minmax(0, ${split}fr) 6px minmax(0, ${100-split}fr)`}}>{sceneMode==="result"&&Boolean(meta)&&!frameReady&&<div className="lab-sync-overlay">正在同步场景与结果…</div>}
+      <div className="lab-primary"><div className="lab-view-pair" data-frame={frame} data-ready={frameReady&&sceneMode==="result"} aria-busy={sceneMode==="result"&&Boolean(meta)&&!frameReady} style={{gridTemplateColumns:`minmax(0, ${split}fr) 6px minmax(0, ${100-split}fr)`}}>
         <section className={`wb-panel lab-scene-panel ${mobile==="scene"?"mobile-visible":""}`}><div className="wb-panel-head"><div><h2>场景几何</h2><span className="lab-panel-subtitle">{sceneMode==="result"?`结果场景 · t=${format(sceneTime,5)} s`:`编辑预览 · 序列起点 t=${format(sceneTime,5)} s`}</span></div><div className="wb-tabs compact"><button className={sceneMode==="draft"?"active":""} onClick={()=>setSceneMode("draft")}>编辑</button><button disabled={!job} className={sceneMode==="result"?"active":""} onClick={()=>setSceneMode("result")}>结果</button><button aria-label="最大化场景" onClick={()=>setExpanded(v=>v==="scene"?"":"scene")}><Maximize2 size={14}/></button></div></div>
-        <Suspense fallback={<div className="wb-loading">装载三维视图…</div>}>{!sceneGeometry||(sceneMode==="result"&&!sceneAux)?<div className="lab-scene wb-loading">正在加载场景几何与对应时刻状态…</div>:<Scene3D key={`${sceneMode}-${sceneMode==="result"?job?.job_id:draft.preset}`} loading={sceneMode==="result"&&Boolean(meta)&&sceneAux?.time_s!==meta?.frame_start_s} request={sceneRequest} geometry={sceneGeometry} auxiliary={sceneAux} time={sceneTime} selected={selected} hidden={hidden} layer={layer} wireframe={wire} showBeam={beam} showTrajectory={trajectory} onSelect={chooseObject}/>}</Suspense>
+        <Suspense fallback={<div className="wb-loading">装载三维视图…</div>}>{!sceneGeometry||(sceneMode==="result"&&!sceneAux)?<div className="lab-scene wb-loading">正在加载场景几何与对应时刻状态…</div>:<Scene3D key={`${sceneMode}-${sceneMode==="result"?job?.job_id:draft.preset}`} loading={false} request={sceneRequest} geometry={sceneGeometry} auxiliary={sceneAux} time={sceneTime} selected={selected} hidden={hidden} layer={layer} wireframe={wire} showBeam={beam} showTrajectory={trajectory} onSelect={chooseObject}/>}</Suspense>
         <div className="lab-layer-bar"><select aria-label="场景图层" value={layer} onChange={e=>setLayer(e.target.value as SceneLayer)}><option value="height">地形高程</option><option value="classes" disabled={!sceneRequest.scene.terrain?.land_cover_map}>地物分类</option><option value="illuminated" disabled={!sceneAux?.coverage}>波束照射次数</option><option value="visible" disabled={!sceneAux?.coverage?.occlusion_evaluated}>无遮挡次数</option><option value="echo" disabled={!sceneAux?.coverage}>有效回波次数</option></select><label><input type="checkbox" checked={wire} onChange={e=>setWire(e.target.checked)}/>线框</label><label><input type="checkbox" checked={beam} onChange={e=>setBeam(e.target.checked)}/>波束</label><label><input type="checkbox" checked={trajectory} onChange={e=>setTrajectory(e.target.checked)}/>轨迹</label><button onClick={()=>setArrayOpen(v=>!v)}>局部阵列</button></div>
         <div className="lab-result-info"><span>{sceneRequest.scene.objects.length} 个对象 · {sceneGeometry?.scatterer_count??preview?.estimate.scatterers??"—"} 个散射单元</span><span>{sceneRequest.radiation?sceneAux?.pattern?"Tx 归一化功率方向图 · 帧起点 · 长度不代表探测距离":"方向图需运行后查看；不绘制替代圆锥":"圆锥为方向示意；长度不代表探测距离"}</span></div>
         {!["height","classes"].includes(layer)&&sceneAux?.coverage&&<p className="lab-coverage-note">CPI 累计比例：红 0% → 绿 100%；分母 {layer==="illuminated"?sceneAux.coverage.tx_slot_denominator:sceneAux.coverage.channel_slot_denominator} 个{layer==="illuminated"?"Tx":"通道"}时隙。位置为 t={format(sceneAux.coverage.positions_epoch_s,5)} s；预览 1/{sceneAux.coverage.preview_stride}，共 {sceneAux.coverage.total_scatterers} 个点。不是面积覆盖率或瞬时阴影。</p>}

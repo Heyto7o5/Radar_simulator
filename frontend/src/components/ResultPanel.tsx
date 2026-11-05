@@ -28,9 +28,32 @@ export function ResultPanel({job,frameIndex,onChangeView,onReady}:{job:SceneJob|
   const [slice,setSlice]=useState<{x:number;y:number}|null>(null),[matrix,setMatrix]=useState<Matrix|null>(null),[error,setError]=useState("");
   const [profileAxis,setProfileAxis]=useState("range");
   const [truth,setTruth]=useState(false),[peaks,setPeaks]=useState(false),[profile,setProfile]=useState(false);
-  const meta:SceneFrame|undefined=job?.frames[frameIndex];
+  const targetMeta:SceneFrame|undefined=job?.frames[frameIndex];
+  const [displayMeta,setDisplayMeta]=useState<SceneFrame>();
+  const meta=displayMeta??targetMeta;
+  const selection=useRef("");
+  const cached=useRef(new Map<string,Matrix>());
   useEffect(()=>{setSlice(null);setChannel("combined");setElevation(0);setView("rd");},[job?.job_id]);
-  useEffect(()=>{onReady?.(-1);if(!job||!meta){setMatrix(null);return;}const ctrl=new AbortController();setMatrix(null);setError("");const options:Record<string,string|number>={view,channel,elevation_index:elevation};if(view==="angle"&&slice)Object.assign(options,{range_index:slice.x,doppler_index:slice.y});getSceneView(job.job_id,frameIndex,options,ctrl.signal).then(v=>{if(!ctrl.signal.aborted){setMatrix(v);onReady?.(frameIndex);}}).catch(e=>{if(!isAbort(e))setError(String(e));});return()=>ctrl.abort();},[job?.job_id,Boolean(meta),frameIndex,view,channel,elevation,slice?.x,slice?.y,onReady]);
+  useEffect(()=>{
+    onReady?.(-1);
+    if(!job||!targetMeta){setMatrix(null);setDisplayMeta(undefined);return;}
+    const ctrl=new AbortController();setError("");
+    const options:Record<string,string|number>={view,channel,elevation_index:elevation};
+    if(view==="angle"&&slice)Object.assign(options,{range_index:slice.x,doppler_index:slice.y});
+    const config=job.job_id+JSON.stringify(options),key=config+":"+frameIndex;
+    if(selection.current!==config){setMatrix(null);setDisplayMeta(undefined);selection.current=config;}
+    const accept=(value:Matrix)=>{if(!ctrl.signal.aborted){setMatrix(value);setDisplayMeta(targetMeta);onReady?.(frameIndex);}};
+    const hit=cached.current.get(key);
+    if(hit)accept(hit);
+    else getSceneView(job.job_id,frameIndex,options,ctrl.signal).then(value=>{
+      if(ctrl.signal.aborted)return;
+      cached.current.set(key,value);
+      if(cached.current.size>8)cached.current.delete(cached.current.keys().next().value!);
+      accept(value);
+    }).catch(e=>{if(!isAbort(e))setError(String(e));});
+    return()=>ctrl.abort();
+  },[job?.job_id,Boolean(targetMeta),frameIndex,view,channel,elevation,slice?.x,slice?.y,onReady]);
+
   const axes=meta?.axes,x=(view==="angle"?axes?.azimuth_deg:axes?.range_m)??[],y=(view==="rd"?axes?.velocity_mps:view==="ra"?axes?.azimuth_deg:axes?.elevation_deg)??[];
   const markers: {x:number;y:number;name:string;kind:string}[]=[];
   if(view==="rd"&&axes){if(peaks)meta?.peak_candidates.forEach((p,i)=>markers.push({x:p.range_bin,y:p.doppler_bin,name:`候选 ${i+1}`,kind:"peak"}));if(truth)meta?.object_truth.forEach(o=>{const r=o.range_extent_m,v=o.closing_velocity_extent_mps;if(r&&v&&r[0]>=x[0]&&r[1]<=x[x.length-1]&&v[0]>=y[0]&&v[1]<=y[y.length-1])markers.push({x:nearest(x,(r[0]+r[1])/2),y:nearest(y,(v[0]+v[1])/2),name:o.id,kind:"truth"});});}

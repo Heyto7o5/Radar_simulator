@@ -7,7 +7,7 @@ html,body{background:#f3f6f9;color:#22364b}button,input,select{font-family:inher
 
 .lab-playback-options{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 16px;background:#fff;border:1px solid #dfe6ee;border-top:0;border-radius:0 0 7px 7px;color:#657b8f;font-size:11px}.lab-playback-options label{display:flex;align-items:center;gap:6px}.lab-playback-options input[type=number]{width:65px;padding:5px 7px;border:1px solid #dce5eb;border-radius:4px;color:#304960;background:#fcfdfe}.lab-playback-state{margin-left:auto;color:#357a80}
 
-.lab-view-pair{position:relative}.lab-sync-overlay{position:absolute;inset:0;z-index:5;background:rgba(243,246,249,.96);display:flex;align-items:center;justify-content:center;color:#657b8f;font-size:12px;pointer-events:none}
+.lab-view-pair{position:relative}
 
 .lab-header>div:first-child{min-width:0;flex:1}.lab-scene-name{width:100%;max-width:680px;box-sizing:border-box}
 
