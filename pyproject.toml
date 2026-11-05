@@ -24,6 +24,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+presentation = ["imageio-ffmpeg>=0.6,<0.9"]
 navigation = ["torch>=2.5,<2.6", "numba>=0.61,<0.62", "imageio-ffmpeg>=0.6,<0.8", "psutil>=7,<8"]
 geo = ["rasterio>=1.4,<1.5", "pyproj>=3.6,<4"]
 dev = [

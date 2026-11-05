@@ -8,6 +8,7 @@ from fastapi import APIRouter
 from .api import app
 from .capabilities import capabilities
 from .configuration import inspect_configuration
+from .presentation import router as presentation_router
 
 router = APIRouter(tags=['platform'])
 
@@ -23,7 +24,7 @@ def check_configuration(request: dict):
 
 
 # Install before the SPA catch-all; replace only the old preflight route.
-app.router.routes = [*router.routes, *[
+app.router.routes = [*presentation_router.routes, *router.routes, *[
     route for route in app.router.routes
     if getattr(route, 'path', None) not in ('/api/v1/capabilities', '/api/v1/scene-check')
 ]]
