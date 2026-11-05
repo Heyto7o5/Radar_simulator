@@ -7,8 +7,9 @@ const sleep = (ms:number) => new Promise(resolve=>setTimeout(resolve,ms));
 function save(url:string,name:string){const a=document.createElement('a');a.href=url;a.download=name;a.click();}
 function contain(ctx:CanvasRenderingContext2D,source:HTMLCanvasElement,x:number,y:number,w:number,h:number){const k=Math.min(w/source.width,h/source.height);ctx.drawImage(source,x+(w-source.width*k)/2,y+(h-source.height*k)/2,source.width*k,source.height*k);}
 
-export function VideoExport({job,start,end,frame,setFrame,stop}:{job:SceneJob;start:number;end:number;frame:number;setFrame:(n:number)=>void;stop:()=>void}){
+export function VideoExport({job,start,end,frame,setFrame,stop,reveal=0}:{job:SceneJob;start:number;end:number;frame:number;setFrame:(n:number)=>void;stop:()=>void;reveal?:number}){
   const [open,setOpen]=useState(false),[title,setTitle]=useState(job.name),[description,setDescription]=useState(''),[resolution,setResolution]=useState(1080),[seconds,setSeconds]=useState(1),[progress,setProgress]=useState(''),[busy,setBusy]=useState(false),[encoding,setEncoding]=useState(false),[error,setError]=useState(''),[output,setOutput]=useState<{video:string;cover:string}|null>(null);
+  useEffect(()=>{if(reveal)setOpen(true);},[reveal]);
   const abort=useRef<AbortController|null>(null);
   useEffect(()=>()=>abort.current?.abort(),[]);
   async function generate(){
